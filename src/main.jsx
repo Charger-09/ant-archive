@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { ArrowUpRight, BookOpen, ChevronRight, MapPin } from "lucide-react";
 import "./styles.css";
@@ -65,10 +65,24 @@ const specimens = [
 
 function App() {
   const [selectedId, setSelectedId] = useState(specimens[0].id);
+  const detailPanelRef = useRef(null);
   const selectedSpecimen = useMemo(
     () => specimens.find((specimen) => specimen.id === selectedId),
     [selectedId],
   );
+
+  const handleSpecimenSelect = (specimenId) => {
+    setSelectedId(specimenId);
+
+    if (window.matchMedia("(max-width: 1120px)").matches) {
+      window.requestAnimationFrame(() => {
+        detailPanelRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      });
+    }
+  };
 
   return (
     <main>
@@ -111,10 +125,10 @@ function App() {
         <h2>以标本室的安静，重新观看微小生命。</h2>
         <div>
           <p>
-            第一版聚焦几组蚂蚁标本的视觉呈现：形态、栖息地、行为片段与一组像自然杂志一样的排版。
+            玻璃、纸张与干燥植物之间，微小的身体被自然光暂时留住。
           </p>
           <p>
-            页面会保持克制、清亮和可浏览，让图片成为主角，让文字像标签一样提供刚好的线索。
+            每一次靠近，都是从尺度之外回到尺度之内，重新辨认那些几乎被忽略的秩序。
           </p>
         </div>
       </section>
@@ -130,7 +144,7 @@ function App() {
             <button
               className={`specimen-card ${specimen.id === selectedId ? "is-active" : ""}`}
               key={specimen.id}
-              onClick={() => setSelectedId(specimen.id)}
+              onClick={() => handleSpecimenSelect(specimen.id)}
               type="button"
             >
               <span className="card-number">{specimen.number}</span>
@@ -147,7 +161,7 @@ function App() {
         </div>
       </section>
 
-      <section className="detail-panel" aria-label="蚂蚁详情">
+      <section className="detail-panel" ref={detailPanelRef} aria-label="蚂蚁详情">
         <div className="detail-image">
           <img src={selectedSpecimen.image} alt={`${selectedSpecimen.name}详情图`} />
         </div>

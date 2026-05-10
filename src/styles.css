@@ -344,6 +344,7 @@ h1 {
   gap: clamp(24px, 5vw, 84px);
   align-items: stretch;
   padding: 42px clamp(18px, 4vw, 54px) clamp(76px, 10vw, 140px);
+  scroll-margin-top: 92px;
 }
 
 .detail-image {
